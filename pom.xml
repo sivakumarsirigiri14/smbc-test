@@ -1,0 +1,110 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.smbc.automationtests</groupId>
+    <artifactId>smbc-test</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <cucumber.version>7.18.1</cucumber.version>
+        <junit.version>5.10.2</junit.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
+        <!--
+            Number of JVM forks Surefire spawns.
+            1C = 1 fork per CPU core  (e.g. 8 cores = 8 forks).
+            Override on CI or locally: mvn test -DforkCount=4
+        -->
+        <forkCount>1C</forkCount>
+        <!-- <cucumber.filter.tags>@smoke</cucumber.filter.tags> -->
+
+        <!--
+            Master switch for parallel execution.
+            Passed to each forked JVM so junit-platform.properties can be overridden.
+            Default: parallel ON.
+            To run sequentially: mvn test -Dparallel=false
+        -->
+        <parallel>true</parallel>
+    </properties>
+
+    <dependencies>
+
+        <!-- Cucumber JUnit 5 engine -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>1.10.2</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+
+                    <!-- Single runner discovers all feature files automatically -->
+                    <includes>
+                        <include>**/TestRunner.java</include>
+                    </includes>
+
+                    <!--
+                        1C = 1 JVM fork per CPU core.
+                        Each fork runs scenarios in parallel via junit-platform.properties.
+                        Override: mvn test -DforkCount=4
+                    -->
+                    <forkCount>${forkCount}</forkCount>
+                    <reuseForks>true</reuseForks>
+
+                    <systemPropertyVariables>
+                        <!--
+                            Forward parallel switch to each forked JVM.
+                            Run sequentially: mvn test -Dparallel=false
+                        -->
+                        <cucumber.execution.parallel.enabled>${parallel}</cucumber.execution.parallel.enabled>
+
+                        <!--
+                            Forward tag filter to each forked JVM.
+                            Run a subset: mvn test -Dcucumber.filter.tags="@smoke"
+                                          mvn test -Dcucumber.filter.tags="@positive or @negative"
+                                          mvn test -Dcucumber.filter.tags="not @negative"
+                        -->
+                        <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+                    </systemPropertyVariables>
+
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
