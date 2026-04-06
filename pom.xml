@@ -99,7 +99,7 @@
                                           mvn test -Dcucumber.filter.tags="@positive or @negative"
                                           mvn test -Dcucumber.filter.tags="not @negative"
                         -->
-                        <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+                        <!-- <cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags> -->
                     </systemPropertyVariables>
 
                 </configuration>
