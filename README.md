@@ -5,8 +5,8 @@ Running test
 
 2) Command line execution: 
 	a) Go to the path where the project was downloaded
-	b) type :  mvn clean test
-	c) To run in parallel -  mvn test -Dparallel=true
+	b) type :  mvn clean test (by default parallel is true) or mvn test -Dparallel=true
+	c) To run sequentially - mvn test -Dparallel=false
 
 3) Check the report
    Go to target folder and open the cucumber.html in the browser after the test run
